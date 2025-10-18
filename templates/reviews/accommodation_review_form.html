@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Review {{ accommodation.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'bookings:accommodation_list' %}">Accommodations</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'bookings:accommodation_detail' pk=accommodation.pk %}">{{ accommodation.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Write Review</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Write a Review for {{ accommodation.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.helper %}
+                            {% crispy form %}
+                        {% else %}
+                            <div class="mb-3">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger">{{ form.title.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.rating.id_for_label }}" class="form-label">{{ form.rating.label }}</label>
+                                {{ form.rating }}
+                                {% if form.rating.errors %}
+                                    <div class="text-danger">{{ form.rating.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+                                {{ form.content }}
+                                {% if form.content.errors %}
+                                    <div class="text-danger">{{ form.content.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                            <a href="{% url 'bookings:accommodation_detail' pk=accommodation.pk %}" class="btn btn-secondary">Cancel</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
