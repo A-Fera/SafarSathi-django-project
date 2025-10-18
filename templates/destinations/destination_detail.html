@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ destination.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Destination Header -->
+        <div class="col-12">
+            <h1 class="display-5 mb-2">{{ destination.name }}</h1>
+            <p class="text-muted">
+                <i class="fas fa-map-marker-alt"></i> {{ destination.location }}, {{ destination.state }}
+                <span class="ms-3">
+                    <i class="fas fa-tag"></i> {{ destination.get_category_display }}
+                </span>
+            </p>
+
+            {% if user.is_staff or user == destination.created_by %}
+            <div class="mt-3 mb-4">
+                <a href="{% url 'destinations:destination_update' pk=destination.pk %}" class="btn btn-primary me-2">
+                    <i class="fas fa-edit"></i> Edit Destination
+                </a>
+                <a href="{% url 'destinations:destination_delete' pk=destination.pk %}" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete Destination
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Destination Photos Gallery -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0">
+                    {% if photos %}
+                    <div id="destinationCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            {% for photo in photos %}
+                            <button type="button" data-bs-target="#destinationCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                                aria-label="Slide {{ forloop.counter }}"></button>
+                            {% endfor %}
+                        </div>
+                        <div class="carousel-inner">
+                            {% for photo in photos %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.caption }}"
+                                    style="height: 500px; object-fit: cover;">
+                                {% if photo.caption %}
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>{{ photo.caption }}</h5>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#destinationCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#destinationCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="text-center p-5">
+                        <img src="{% static 'images/placeholder.jpg' %}" class="img-fluid"
+                            alt="No photos available" style="max-height: 400px;">
+                        <p class="mt-3 text-muted">No photos available for this destination.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fas fa-image"></i> {{ photos.count }} Photos
+                        </span>
+                        <a href="{% url 'destinations:photo_upload' destination_pk=destination.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-upload"></i> Upload Photo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Destination Details -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">About {{ destination.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ destination.description|linebreaks }}</p>
+
+                    <h6 class="card-subtitle mb-2 mt-4 text-muted">Best Time to Visit</h6>
+                    <p>{{ destination.best_time_to_visit }}</p>
+
+                    {% if destination.features.exists %}
+                    <h6 class="card-subtitle mb-2 mt-4 text-muted">Key Features</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for feature in destination.features.all %}
+                        <li class="list-group-item">
+                            <strong>{{ feature.feature_name }}</strong>
+                            {% if feature.description %}
+                            <p class="mb-0 text-muted small">{{ feature.description }}</p>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Traveler Reviews</h5>
+                    {% if not user_has_reviewed and user.is_authenticated %}
+                    <a href="{% url 'reviews:destination_review' destination_id=destination.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-star"></i> Write a Review
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                    <div class="reviews-container">
+                        {% for review in reviews %}
+                        <div class="review mb-4 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="mb-0">{{ review.title }}</h6>
+                                    <div class="rating">
+                                        {% for i in "12345" %}
+                                        <i class="fas fa-star {% if i|add:"0" <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                        {% endfor %}
+                                        <span class="ms-1 text-muted">{{ review.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="fas fa-user"></i> {{ review.user.get_full_name|default:review.user.username }}
+                                </div>
+                            </div>
+                            <p class="mb-2">{{ review.content }}</p>
+
+                            {% if review.photos.exists %}
+                            <div class="review-photos mt-2">
+                                <div class="row g-2">
+                                    {% for photo in review.photos.all %}
+                                    <div class="col-4 col-md-3 col-lg-2">
+                                        <a href="{{ photo.image.url }}" data-lightbox="review-{{ review.id }}"
+                                           data-title="{{ photo.caption|default:'Review photo' }}">
+                                            <img src="{{ photo.image.url }}" class="img-fluid rounded" alt="{{ photo.caption|default:'Review photo' }}">
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if reviews.count > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'reviews:destination_review_list' destination_id=destination.pk %}" class="btn btn-outline-secondary">
+                            See All Reviews
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% else %}
+                    <div class="text-center p-4">
+                        <p class="text-muted mb-3">No reviews yet for this destination.</p>
+                        {% if user.is_authenticated and not user_has_reviewed %}
+                        <a href="{% url 'reviews:destination_review' destination_id=destination.pk %}" class="btn btn-primary">
+                            <i class="fas fa-star"></i> Be the first to review!
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Information -->
+        <div class="col-md-4">
+            <!-- Map and Location -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Location</h5>
+                </div>
+                <div class="card-body">
+                    {% if destination.latitude and destination.longitude %}
+                    <div id="destinationMap" style="height: 200px;" class="mb-3"></div>
+                    {% endif %}
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary"></i> {{ destination.location }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map text-primary"></i> {{ destination.state }}, {{ destination.country }}
+                        </li>
+                        {% if destination.entry_fee > 0 %}
+                        <li>
+                            <i class="fas fa-ticket-alt text-primary"></i> Entry Fee:
+                            <strong>৳{{ destination.entry_fee }}</strong>
+                        </li>
+                        {% else %}
+                        <li>
+                            <i class="fas fa-ticket-alt text-primary"></i> <span class="text-success">Free Entry</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Nearby Accommodations -->
+            {% if accommodations %}
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Where to Stay</h5>
+                    <a href="{% url 'bookings:accommodation_list' %}?search={{ destination.name }}" class="btn btn-sm btn-link">
+                        See All
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for accommodation in accommodations %}
+                        <a href="{% url 'bookings:accommodation_detail' pk=accommodation.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ accommodation.name }}</h6>
+                                <small class="text-primary">৳{{ accommodation.price_per_night }}/night</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ accommodation.get_accommodation_type_display }}</small>
+                                <div class="rating small">
+                                    {% for i in "12345" %}
+                                    <i class="fas fa-star {% if i|add:"0" <= accommodation.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if destination.latitude and destination.longitude %}
+<!-- Map Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('destinationMap').setView([{{ destination.latitude }}, {{ destination.longitude }}], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([{{ destination.latitude }}, {{ destination.longitude }}])
+            .addTo(map)
+            .bindPopup('{{ destination.name }}')
+            .openPopup();
+    });
+</script>
+{% endif %}
+{% endblock %}
