@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ accommodation.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Confirm Deletion</h3>
+                </div>
+                <div class="card-body">
+                    <p>Are you sure you want to delete the accommodation "{{ accommodation.name }}"?</p>
+                    <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+                    <p>This will also delete:</p>
+                    <ul>
+                        <li>All reviews for this accommodation</li>
+                        <li>All bookings associated with this accommodation</li>
+                        <li>All other related data</li>
+                    </ul>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <a href="{% url 'bookings:accommodation_detail' pk=accommodation.pk %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
