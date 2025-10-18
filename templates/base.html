@@ -36,7 +36,7 @@
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: var(--primary-color) !important;
+            color: #4A4063 !important;
         }
 
         .btn-primary {
@@ -110,19 +110,24 @@
         }
 
         .footer {
-            background: var(--dark-color);
-            color: white;
+            background: #19183B;
+            color: #E8E8E8;
             padding: 3rem 0 1rem;
             margin-top: 5rem;
         }
-
+        .footer .text-muted {
+        color: #F7F7F7 !important;
+        }
+        .footer .row {
+        gap: 90px;
+        }
         .rating {
             color: var(--secondary-color);
         }
 
         .form-control {
             border-radius: 10px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #F8F988;
             padding: 12px 15px;
         }
 
@@ -249,33 +254,25 @@
                     <h5><i class="fas fa-map-marked-alt me-2"></i>Safar Sathi</h5>
                     <p class="text-muted">Your trusted travel companion for exploring incredible destinations across Bangladesh.</p>
                     <div class="social-links">
-                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="https://facebook.com/safarsathi" class="text-white me-3"><i class="fab fa-facebook"></i></a>
                         <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="https://github.com/A-Fera/SafarSathi-django-project" class="text-white me-3"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-2 mb-4">
-                    <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted">About Us</a></li>
-                        <li><a href="#" class="text-muted">Contact</a></li>
-                        <li><a href="#" class="text-muted">FAQ</a></li>
-                        <li><a href="#" class="text-muted">Terms</a></li>
-                    </ul>
-                </div>
+
                 <div class="col-lg-3 mb-4">
                     <h6>Services</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted">Destinations</a></li>
-                        <li><a href="#" class="text-muted">Accommodations</a></li>
-                        <li><a href="#" class="text-muted">Travel Guides</a></li>
-                        <li><a href="#" class="text-muted">Itinerary Planning</a></li>
+                        <li><a href="{% url 'destinations:destination_list' %}" class="text-muted">Destinations</a></li>
+                        <li><a href="{% url 'bookings:accommodation_list' %}"class="text-muted">Accommodations</a></li>
+                        <li><a href="{% url 'accounts:guide_list' %}" class="text-muted">Travel Guides</a></li>
+                        <li><a href="{% url 'itinerary:itinerary_list' %}" class="text-muted">Itinerary Planning</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 mb-4">
                     <h6>Contact Info</h6>
                     <p class="text-muted mb-2">
-                        <i class="fas fa-phone me-2"></i>+880 1712-345678
+                        <i class="fas fa-phone me-2"></i>+880 1571 293495
                     </p>
                     <p class="text-muted mb-2">
                         <i class="fas fa-envelope me-2"></i>info@safarsathi.com
