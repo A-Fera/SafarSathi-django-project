@@ -54,10 +54,18 @@
                         <span class="badge bg-success fs-6">Verified Guide</span>
                     </div>
 
-                    <div class="text-center">
+                    <div class="text-center mb-3">
                         <span class="h4 text-primary">৳{{ guide.hourly_rate }}</span>
                         <span class="text-muted">/hour</span>
                     </div>
+
+                    {% if user.is_authenticated and not user_has_reviewed and user != guide.user %}
+                        <div class="d-grid">
+                            <a href="{% url 'reviews:guide_review' guide_id=guide.pk %}" class="btn btn-primary">
+                                <i class="fas fa-star"></i> Write a Review
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -75,15 +83,12 @@
                             <p>{{ guide.region }}</p>
                         </div>
                         <div class="col-md-6">
+                            <h6><i class="fas fa-clock me-2"></i>Experience</h6>
+                            <p>{{ guide.experience_years }} years</p>
+                        </div>
+                        <div class="col-md-6">
                             <h6><i class="fas fa-language me-2"></i>Languages</h6>
                             <p>{{ guide.languages }}</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6><i class="fas fa-calendar me-2"></i>Experience</h6>
-                            <p>{{ guide.experience_years }} years</p>
                         </div>
                         <div class="col-md-6">
                             <h6><i class="fas fa-phone me-2"></i>Contact</h6>
@@ -109,40 +114,75 @@
                 </div>
             </div>
 
-            <!-- Reviews -->
-            {% if reviews %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4><i class="fas fa-star me-2"></i>Reviews</h4>
-                        {% for review in reviews %}
-                            <div class="border-bottom pb-3 mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <h6>{{ review.title }}</h6>
-                                    <div class="rating">
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= review.rating %}
-                                                <i class="fas fa-star text-warning"></i>
-                                            {% else %}
-                                                <i class="far fa-star text-muted"></i>
-                                            {% endif %}
+            <!-- Reviews Section -->
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Reviews</h5>
+                    {% if not user_has_reviewed and user.is_authenticated and user != guide.user %}
+                    <a href="{% url 'reviews:guide_review' guide_id=guide.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-star"></i> Write a Review
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        <div class="reviews-container">
+                            {% for review in reviews %}
+                            <div class="review mb-4 pb-3 border-bottom">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <h6 class="mb-0">{{ review.title }}</h6>
+                                        <div class="rating">
+                                            {% for i in "12345" %}
+                                            <i class="fas fa-star {% if i|add:"0" <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                            {% endfor %}
+                                            <span class="ms-1 text-muted">{{ review.created_at|date:"M d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-user"></i> {{ review.user.get_full_name|default:review.user.username }}
+                                    </div>
+                                </div>
+                                <p class="mb-2">{{ review.content }}</p>
+
+                                {% if review.photos.exists %}
+                                <div class="review-photos mt-2">
+                                    <div class="row g-2">
+                                        {% for photo in review.photos.all %}
+                                        <div class="col-4 col-md-3 col-lg-2">
+                                            <a href="{{ photo.image.url }}" data-lightbox="review-{{ review.id }}"
+                                               data-title="{{ photo.caption|default:'Review photo' }}">
+                                                <img src="{{ photo.image.url }}" class="img-fluid rounded" alt="{{ photo.caption|default:'Review photo' }}">
+                                            </a>
+                                        </div>
                                         {% endfor %}
                                     </div>
                                 </div>
-                                <p>{{ review.content }}</p>
-                                <small class="text-muted">By {{ review.user.username }} on {{ review.created_at|date:"M d, Y" }}</small>
+                                {% endif %}
                             </div>
-                        {% endfor %}
-                    </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if reviews.count > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'reviews:guide_review_list' guide_id=guide.pk %}" class="btn btn-outline-secondary">
+                                See All Reviews
+                            </a>
+                        </div>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="text-center p-4">
+                            <p class="text-muted mb-3">No reviews yet for this guide.</p>
+                            {% if user.is_authenticated and not user_has_reviewed and user != guide.user %}
+                            <a href="{% url 'reviews:guide_review' guide_id=guide.pk %}" class="btn btn-primary">
+                                <i class="fas fa-star"></i> Be the first to review!
+                            </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
-            {% else %}
-                <div class="card">
-                    <div class="card-body text-center py-4">
-                        <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
-                        <h5>No reviews yet</h5>
-                        <p class="text-muted">Be the first to review this guide's services!</p>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
 </div>
