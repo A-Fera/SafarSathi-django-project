@@ -148,9 +148,24 @@ class GuideListView(ListView):
 
 def guide_detail(request, pk):
     guide = get_object_or_404(LocalGuide, pk=pk)
-    reviews = []  # You can add guide reviews later
+    from reviews.models import GuideReview
+
+    reviews = GuideReview.objects.filter(
+        guide=guide,
+        is_approved=True
+    ).order_by('-created_at')[:5]
+
+    # Check if user has already reviewed this guide
+    user_has_reviewed = False
+    if request.user.is_authenticated:
+        user_has_reviewed = GuideReview.objects.filter(
+            guide=guide,
+            user=request.user
+        ).exists()
+
     context = {
         'guide': guide,
-        'reviews': reviews
+        'reviews': reviews,
+        'user_has_reviewed': user_has_reviewed,
     }
     return render(request, 'accounts/guide_detail.html', context)
