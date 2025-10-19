@@ -12,4 +12,8 @@ urlpatterns = [
     path('accommodations/<int:accommodation_id>/review/', views.accommodation_review, name='accommodation_review'),
     path('accommodations/<int:accommodation_id>/reviews/', views.accommodation_review_list,
          name='accommodation_review_list'),
+
+    # Guide reviews
+    path('guides/<int:guide_id>/review/', views.guide_review, name='guide_review'),
+    path('guides/<int:guide_id>/reviews/', views.guide_review_list, name='guide_review_list'),
 ]
