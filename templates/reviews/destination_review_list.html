@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Reviews for {{ destination.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'destinations:destination_list' %}">Destinations</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'destinations:destination_detail' pk=destination.pk %}">{{ destination.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Reviews</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Reviews for {{ destination.name }}</h4>
+                    <a href="{% url 'destinations:destination_detail' pk=destination.pk %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Destination
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        <div class="reviews-container">
+                            {% for review in reviews %}
+                            <div class="review mb-4 pb-4 border-bottom">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <h5 class="mb-1">{{ review.title }}</h5>
+                                        <div class="rating mb-2">
+                                            {% for i in "12345" %}
+                                            <i class="fas fa-star {% if i|add:"0" <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                            {% endfor %}
+                                            <span class="ms-2 text-muted">{{ review.created_at|date:"F d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fas fa-user"></i> {{ review.user.get_full_name|default:review.user.username }}
+                                    </div>
+                                </div>
+                                <p class="mb-3">{{ review.content }}</p>
+
+                                {% if review.photos.exists %}
+                                <div class="review-photos">
+                                    <div class="row g-2">
+                                        {% for photo in review.photos.all %}
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <a href="{{ photo.image.url }}" data-lightbox="review-{{ review.id }}"
+                                               data-title="{{ photo.caption|default:'Review photo' }}">
+                                                <img src="{{ photo.image.url }}" class="img-fluid rounded" 
+                                                     alt="{{ photo.caption|default:'Review photo' }}">
+                                            </a>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No reviews yet</h5>
+                            <p class="text-muted">Be the first to share your experience!</p>
+                            <a href="{% url 'reviews:destination_review' destination_id=destination.pk %}" class="btn btn-primary">
+                                <i class="fas fa-star"></i> Write a Review
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+{% endblock %}
