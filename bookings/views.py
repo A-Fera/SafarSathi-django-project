@@ -119,10 +119,7 @@ def accommodation_delete(request, pk):
         messages.error(request, 'You do not have permission to delete this accommodation.')
         return redirect('bookings:accommodation_detail', pk=pk)
 
-    if request.method == 'POST':
-        name = accommodation.name
-        accommodation.delete()
-        messages.success(request, f'Accommodation "{name}" has been deleted successfully.')
-        return redirect('bookings:accommodation_list')
-
-    return render(request, 'bookings/accommodation_confirm_delete.html', {'accommodation': accommodation})
+    name = accommodation.name
+    accommodation.delete()
+    messages.success(request, f'Accommodation "{name}" has been deleted successfully.')
+    return redirect('bookings:accommodation_list')
