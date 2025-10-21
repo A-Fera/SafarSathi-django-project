@@ -20,7 +20,4 @@ class ItineraryItemAdmin(admin.ModelAdmin):
     list_filter = ['item_type', 'start_date']
     search_fields = ['title', 'itinerary__title']
 
-@admin.register(ItineraryCollaborator)
-class ItineraryCollaboratorAdmin(admin.ModelAdmin):
-    list_display = ['itinerary', 'user', 'permission', 'invited_at', 'accepted_at']
-    list_filter = ['permission', 'invited_at']
+
