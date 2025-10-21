@@ -17,7 +17,5 @@ urlpatterns = [
     path('<int:itinerary_pk>/item/<int:item_pk>/delete/', views.item_delete, name='item_delete'),
     path('<int:itinerary_pk>/quick-add-destination/', views.quick_add_destination, name='quick_add_destination'),
 
-    # Public itineraries
-    path('public/', views.PublicItineraryListView.as_view(), name='public_itinerary_list'),
-    path('public/<int:pk>/', views.public_itinerary_detail, name='public_itinerary_detail'),
+    
 ]
