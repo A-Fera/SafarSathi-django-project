@@ -71,21 +71,3 @@ class ItineraryItem(models.Model):
         return (self.end_date - self.start_date).days + 1
 
 
-class ItineraryCollaborator(models.Model):
-    PERMISSION_CHOICES = [
-        ('view', 'View Only'),
-        ('edit', 'Can Edit'),
-        ('admin', 'Admin'),
-    ]
-
-    itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name='collaborators')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default='view')
-    invited_at = models.DateTimeField(auto_now_add=True)
-    accepted_at = models.DateTimeField(null=True, blank=True)
-
-    class Meta:
-        unique_together = ('itinerary', 'user')
-
-    def __str__(self):
-        return f"{self.user.username} - {self.itinerary.title}"
