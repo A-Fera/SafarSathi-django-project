@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit
-from .models import Accommodation, Booking
+from .models import Accommodation
 
 
 class AccommodationForm(forms.ModelForm):
@@ -42,21 +42,3 @@ class AccommodationForm(forms.ModelForm):
         )
 
 
-class BookingForm(forms.ModelForm):
-    class Meta:
-        model = Booking
-        fields = ['check_in_date', 'check_out_date', 'number_of_guests']
-        widgets = {
-            'check_in_date': forms.DateInput(attrs={'type': 'date'}),
-            'check_out_date': forms.DateInput(attrs={'type': 'date'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('check_in_date', css_class='form-control'),
-            Field('check_out_date', css_class='form-control'),
-            Field('number_of_guests', css_class='form-control'),
-            Submit('submit', 'Book Now', css_class='btn btn-primary')
-        )
