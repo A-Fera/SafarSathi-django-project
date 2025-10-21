@@ -30,11 +30,6 @@
                                     {% else %}bg-secondary{% endif %} fs-6">
                                     {{ itinerary.get_status_display }}
                                 </span>
-                                {% if itinerary.is_public %}
-                                    <span class="badge bg-info fs-6">
-                                        <i class="fas fa-globe me-1"></i>Public
-                                    </span>
-                                {% endif %}
                             </div>
                         </div>
                         <div class="text-end">
@@ -104,40 +99,18 @@
                                         <div class="item-type-icon
                                             {% if item.item_type == 'destination' %}bg-primary
                                             {% elif item.item_type == 'accommodation' %}bg-success
-                                            {% elif item.item_type == 'transport' %}bg-warning
-                                            {% elif item.item_type == 'activity' %}bg-info
-                                            {% elif item.item_type == 'meal' %}bg-danger
                                             {% else %}bg-secondary{% endif %} text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
                                             {% if item.item_type == 'destination' %}
                                                 <i class="fas fa-map-marker-alt"></i>
                                             {% elif item.item_type == 'accommodation' %}
                                                 <i class="fas fa-bed"></i>
-                                            {% elif item.item_type == 'transport' %}
-                                                <i class="fas fa-car"></i>
-                                            {% elif item.item_type == 'activity' %}
-                                                <i class="fas fa-hiking"></i>
-                                            {% elif item.item_type == 'meal' %}
-                                                <i class="fas fa-utensils"></i>
                                             {% else %}
                                                 <i class="fas fa-star"></i>
                                             {% endif %}
                                         </div>
-                                        <div>
-                                            {% if item.start_time %}
-                                                <small class="text-muted">{{ item.start_time|time:"H:i" }}</small>
-                                            {% endif %}
-                                            {% if item.end_time %}
-                                                <small class="text-muted">- {{ item.end_time|time:"H:i" }}</small>
-                                            {% endif %}
-                                        </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <h6 class="mb-1">
-                                            {{ item.title }}
-                                            {% if item.is_booked %}
-                                                <span class="badge bg-success ms-2">Booked</span>
-                                            {% endif %}
-                                        </h6>
+                                        <h6 class="mb-1">{{ item.title }}</h6>
                                         {% if item.destination %}
                                             <p class="text-muted mb-1">
                                                 <i class="fas fa-map-marker-alt me-1"></i>
@@ -153,14 +126,6 @@
                                                     {{ item.accommodation.name }}
                                                 </a>
                                             </p>
-                                        {% endif %}
-                                        {% if item.location %}
-                                            <p class="text-muted mb-1">
-                                                <i class="fas fa-location-dot me-1"></i>{{ item.location }}
-                                            </p>
-                                        {% endif %}
-                                        {% if item.description %}
-                                            <p class="mb-1">{{ item.description }}</p>
                                         {% endif %}
                                         {% if item.notes %}
                                             <small class="text-muted">
@@ -178,7 +143,7 @@
                                             <a href="{% url 'itinerary:item_update' itinerary.pk item.pk %}" class="btn btn-sm btn-outline-warning">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="{% url 'itinerary:item_delete' itinerary.pk item.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                                            <a href="{% url 'itinerary:item_delete' itinerary.pk item.pk %}" class="btn btn-sm btn-outline-danger" >
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
@@ -193,46 +158,13 @@
                     <div class="card-body text-center py-5">
                         <i class="fas fa-calendar-plus fa-4x text-muted mb-3"></i>
                         <h4>No Items in Itinerary</h4>
-                        <p class="text-muted">Start adding destinations, accommodations, and activities to your trip!</p>
+                        <p class="text-muted">Start adding destinations and accommodations to your trip!</p>
                         <a href="{% url 'itinerary:item_create' itinerary.pk %}" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus me-2"></i>Add First Item
                         </a>
                     </div>
                 </div>
             {% endif %}
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
-                    <div class="row">
-                        <div class="col-md-3 mb-2">
-                            <a href="{% url 'destinations:destination_list' %}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-map-marker-alt me-2"></i>Browse Destinations
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <a href="{% url 'bookings:accommodation_list' %}" class="btn btn-outline-success w-100">
-                                <i class="fas fa-bed me-2"></i>Find Accommodations
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <a href="{% url 'accounts:guide_list' %}" class="btn btn-outline-info w-100">
-                                <i class="fas fa-user-friends me-2"></i>Find Guides
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <a href="{% url 'itinerary:item_create' itinerary.pk %}" class="btn btn-primary w-100">
-                                <i class="fas fa-plus me-2"></i>Add Custom Item
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
