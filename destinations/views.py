@@ -112,13 +112,10 @@ def destination_delete(request, pk):
         messages.error(request, 'You do not have permission to delete this destination.')
         return redirect('destinations:destination_detail', pk=pk)
 
-    if request.method == 'POST':
-        name = destination.name
-        destination.delete()
-        messages.success(request, f'Destination "{name}" has been deleted successfully.')
-        return redirect('destinations:destination_list')
-
-    return render(request, 'destinations/destination_confirm_delete.html', {'destination': destination})
+    name = destination.name
+    destination.delete()
+    messages.success(request, f'Destination "{name}" has been deleted successfully.')
+    return redirect('destinations:destination_list')
 
 
 @login_required
