@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
 {% block title %}{{ title }} - Safar Sathi{% endblock %}
 
@@ -14,7 +13,7 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-                        
+
                         <div class="mb-3">
                             <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
                             {{ form.title }}
@@ -36,19 +35,9 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
-                                {{ form.status }}
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-check mt-4">
-                                    {{ form.is_public }}
-                                    <label class="form-check-label" for="{{ form.is_public.id_for_label }}">
-                                        {{ form.is_public.label }} (Others can view your itinerary)
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+                            {{ form.status }}
                         </div>
 
                         <!-- Display form errors -->
@@ -95,14 +84,25 @@
     }
 
     .form-control:focus, .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
-    .form-label {
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 8px;
+    .btn {
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
     }
 </style>
 {% endblock %}
