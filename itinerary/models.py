@@ -21,7 +21,6 @@ class Itinerary(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     status = models.CharField(max_length=20, choices=TRIP_STATUS_CHOICES, default='planning')
-    is_public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,10 +44,6 @@ class ItineraryItem(models.Model):
     ITEM_TYPE_CHOICES = [
         ('destination', 'Destination Visit'),
         ('accommodation', 'Accommodation'),
-        ('transport', 'Transportation'),
-        ('activity', 'Activity'),
-        ('meal', 'Meal'),
-        ('other', 'Other'),
     ]
 
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name='itinerary_items')
@@ -57,23 +52,16 @@ class ItineraryItem(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, null=True, blank=True)
 
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    location = models.CharField(max_length=200, blank=True)
-
     start_date = models.DateField()
     end_date = models.DateField()
-    start_time = models.TimeField(null=True, blank=True)
-    end_time = models.TimeField(null=True, blank=True)
-
     estimated_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     notes = models.TextField(blank=True)
-    is_booked = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['start_date', 'start_time', 'order']
+        ordering = ['start_date', 'order']
 
     def __str__(self):
         return f"{self.title} - {self.itinerary.title}"
