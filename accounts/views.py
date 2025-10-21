@@ -124,16 +124,12 @@ def guide_update(request, pk):
 def guide_delete(request, pk):
     guide = get_object_or_404(LocalGuide, pk=pk)
 
-    if request.method == 'POST':
-        guide_name = guide.user.get_full_name()
-        user = guide.user
-        guide.delete()
-        user.delete()  # Also delete the user account
-        messages.success(request, f'Guide profile for {guide_name} has been deleted.')
-        return redirect('accounts:guide_list')
-
-    return render(request, 'accounts/guide_confirm_delete.html', {'guide': guide})
-
+    guide_name = guide.user.get_full_name()
+    user = guide.user
+    guide.delete()
+    user.delete()  # Also delete the user account
+    messages.success(request, f'Guide profile for {guide_name} has been deleted.')
+    return redirect('accounts:guide_list')
 
 # Public views for users
 class GuideListView(ListView):
