@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Review {{ destination.name }}{% endblock %}
 
@@ -20,18 +21,18 @@
                     <h4 class="mb-0">Write a Review for {{ destination.name }}</h4>
                 </div>
                 <div class="card-body">
+                    <div class="destination-info mb-4 p-3 bg-light rounded">
+                        <h5>{{ destination.name }}</h5>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-map-marker-alt"></i> {{ destination.location }}, {{ destination.state }}
+                        </p>
+                    </div>
+
                     <form method="post">
                         {% csrf_token %}
                         {% if form.helper %}
                             {% crispy form %}
                         {% else %}
-                            <div class="mb-3">
-                                <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
-                                {{ form.title }}
-                                {% if form.title.errors %}
-                                    <div class="text-danger">{{ form.title.errors }}</div>
-                                {% endif %}
-                            </div>
                             <div class="mb-3">
                                 <label for="{{ form.rating.id_for_label }}" class="form-label">{{ form.rating.label }}</label>
                                 {{ form.rating }}
@@ -46,8 +47,10 @@
                                     <div class="text-danger">{{ form.content.errors }}</div>
                                 {% endif %}
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                            <a href="{% url 'destinations:destination_detail' pk=destination.pk %}" class="btn btn-secondary">Cancel</a>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                                <a href="{% url 'destinations:destination_detail' pk=destination.pk %}" class="btn btn-secondary">Cancel</a>
+                            </div>
                         {% endif %}
                     </form>
                 </div>
