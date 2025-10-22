@@ -2,9 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count, Sum
-from django.http import JsonResponse
 from .models import Itinerary, ItineraryItem
-from .forms import ItineraryForm, ItineraryItemForm, QuickDestinationForm
+from .forms import ItineraryForm, ItineraryItemForm
 
 
 
@@ -150,29 +149,3 @@ def item_delete(request, itinerary_pk, item_pk):
     messages.success(request, 'Item removed from itinerary!')
     return redirect('itinerary:itinerary_detail', pk=itinerary.pk)
 
-
-@login_required
-def quick_add_destination(request, itinerary_pk):
-    itinerary = get_object_or_404(Itinerary, pk=itinerary_pk, user=request.user)
-
-    if request.method == 'POST':
-        form = QuickDestinationForm(request.POST, itinerary=itinerary)
-        if form.is_valid():
-            destination = form.cleaned_data['destination']
-            start_date = form.cleaned_data['start_date']
-            end_date = form.cleaned_data['end_date']
-
-            ItineraryItem.objects.create(
-                itinerary=itinerary,
-                item_type='destination',
-                destination=destination,
-                title=f"Visit {destination.name}",
-                start_date=start_date,
-                end_date=end_date,
-                estimated_cost=destination.entry_fee if destination.entry_fee > 0 else None
-            )
-
-            messages.success(request, f'{destination.name} added to your itinerary!')
-            return redirect('itinerary:itinerary_detail', pk=itinerary.pk)
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
