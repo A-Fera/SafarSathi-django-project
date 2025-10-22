@@ -23,7 +23,7 @@ class DestinationListView(ListView):
             queryset = queryset.filter(
                 Q(name__icontains=search) |
                 Q(location__icontains=search) |
-                Q(state__icontains=search) |
+                Q(country__icontains=search) |
                 Q(description__icontains=search)
             )
 
@@ -139,3 +139,4 @@ def photo_upload(request, destination_pk):
         'destination': destination,
         'title': 'Upload Photo'
     })
+
