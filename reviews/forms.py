@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit
-from .models import DestinationReview, AccommodationReview, GuideReview, ReviewPhoto
+from .models import DestinationReview, AccommodationReview, GuideReview
 
 
 class DestinationReviewForm(forms.ModelForm):
@@ -91,14 +91,3 @@ class GuideReviewForm(forms.ModelForm):
         )
 
 
-class ReviewPhotoForm(forms.ModelForm):
-    class Meta:
-        model = ReviewPhoto
-        fields = ['image', 'caption']
-        widgets = {
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
-            'caption': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Optional caption for the photo'
-            })
-        }
