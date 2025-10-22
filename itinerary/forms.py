@@ -2,8 +2,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Row, Column
 from .models import Itinerary, ItineraryItem
-from destinations.models import Destination
-from bookings.models import Accommodation
+
 
 
 class ItineraryForm(forms.ModelForm):
@@ -99,24 +98,3 @@ class ItineraryItemForm(forms.ModelForm):
         return cleaned_data
 
 
-class QuickDestinationForm(forms.Form):
-    destination = forms.ModelChoiceField(
-        queryset=Destination.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-
-    def __init__(self, *args, **kwargs):
-        self.itinerary = kwargs.pop('itinerary', None)
-        super().__init__(*args, **kwargs)
-
-        if self.itinerary:
-            self.fields['start_date'].widget.attrs.update({
-                'min': self.itinerary.start_date.strftime('%Y-%m-%d'),
-                'max': self.itinerary.end_date.strftime('%Y-%m-%d')
-            })
-            self.fields['end_date'].widget.attrs.update({
-                'min': self.itinerary.start_date.strftime('%Y-%m-%d'),
-                'max': self.itinerary.end_date.strftime('%Y-%m-%d')
-            })
