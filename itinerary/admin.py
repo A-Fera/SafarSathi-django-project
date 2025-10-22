@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Itinerary, ItineraryItem, ItineraryCollaborator
+from .models import Itinerary, ItineraryItem
 
 class ItineraryItemInline(admin.TabularInline):
     model = ItineraryItem
