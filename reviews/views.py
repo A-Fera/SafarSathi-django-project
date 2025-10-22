@@ -4,8 +4,8 @@ from django.contrib import messages
 from destinations.models import Destination
 from bookings.models import Accommodation
 from accounts.models import LocalGuide
-from .models import DestinationReview, AccommodationReview, GuideReview, ReviewPhoto
-from .forms import DestinationReviewForm, AccommodationReviewForm, GuideReviewForm, ReviewPhotoForm
+from .models import DestinationReview, AccommodationReview, GuideReview
+from .forms import DestinationReviewForm, AccommodationReviewForm, GuideReviewForm
 
 
 @login_required
