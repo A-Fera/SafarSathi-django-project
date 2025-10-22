@@ -37,7 +37,7 @@ class DestinationReview(models.Model):
 
     @property
     def title(self):
-        """Generate a title based on rating"""
+
         rating_titles = {
             1: "Poor Experience",
             2: "Below Average",
@@ -74,7 +74,7 @@ class AccommodationReview(models.Model):
 
     @property
     def title(self):
-        """Generate a title based on rating"""
+
         rating_titles = {
             1: "Poor Stay",
             2: "Below Average Stay",
@@ -111,7 +111,6 @@ class GuideReview(models.Model):
 
     @property
     def title(self):
-        """Generate a title based on rating"""
         rating_titles = {
             1: "Poor Service",
             2: "Below Average Guide",
@@ -122,22 +121,3 @@ class GuideReview(models.Model):
         return rating_titles.get(self.rating, "Review")
 
 
-class ReviewPhoto(models.Model):
-    destination_review = models.ForeignKey(DestinationReview, on_delete=models.CASCADE, related_name='photos',
-                                           null=True, blank=True)
-    accommodation_review = models.ForeignKey(AccommodationReview, on_delete=models.CASCADE, related_name='photos',
-                                             null=True, blank=True)
-    guide_review = models.ForeignKey(GuideReview, on_delete=models.CASCADE, related_name='photos',
-                                     null=True, blank=True)
-    image = models.ImageField(upload_to='review_photos/')
-    caption = models.CharField(max_length=200, blank=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        if self.destination_review:
-            return f"Photo for {self.destination_review.title}"
-        elif self.accommodation_review:
-            return f"Photo for {self.accommodation_review.title}"
-        elif self.guide_review:
-            return f"Photo for {self.guide_review.title}"
-        return "Review Photo"
